@@ -1,0 +1,73 @@
+{extend name='table'}
+
+{block name="button"}
+<!--{if auth("inbound")}-->
+<button data-table-id="ShopStockRecordTable" data-modal='{:url("inbound")}' class='layui-btn layui-btn-sm layui-btn-primary'>入库</button>
+<!--{/if}-->
+<!--{if auth("outbound")}-->
+<button data-table-id="ShopStockRecordTable" data-modal='{:url("outbound")}' class='layui-btn layui-btn-sm layui-btn-primary'>出库</button>
+<!--{/if}-->
+<!--{if auth("sold")}-->
+<button data-table-id="ShopStockRecordTable" data-modal='{:url("sold")}' class='layui-btn layui-btn-sm layui-btn-primary'>售出</button>
+<!--{/if}-->
+<!--{if auth("adjust")}-->
+<button data-table-id="ShopStockRecordTable" data-modal='{:url("adjust")}' class='layui-btn layui-btn-sm layui-btn-primary'>盘点</button>
+<!--{/if}-->
+<!--{if auth("log")}-->
+<button data-table-id="ShopStockRecordTable" data-modal='{:url("log")}' class='layui-btn layui-btn-sm layui-btn-primary'>库存变化记录</button>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<div class="layui-tab layui-tab-card">
+    <div class="layui-tab-content">
+        {include file='shop_stock_record/index_search'}
+        <table id="ShopStockRecordTable" data-url="{:request()->url()}" data-target-search="form.form-search"></table>
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        $('#ShopStockRecordTable').layTable({
+            even: true, height: 'full',
+            sort: {field: 'id', type: 'desc'},
+            cols: [[
+                {checkbox: true, fixed: true},
+                {field: 'product_barcode', title: '货号(条码)', width: 150, align: 'center'},
+                {field: 'product_name', title: '商品名称', width: 200, align: 'left'},
+                {field: 'product_box_spec', title: '箱规', width: 80, align: 'center'},
+                {field: 'product_cost_price', title: '供货价', width: 100, align: 'center', templet: '#PriceTpl'},
+                {field: 'product_price', title: '零售价', width: 100, align: 'center', templet: '#PriceTpl'},
+                {field: 'stock', title: '当前库存', width: 100, align: 'center', templet: '#StockTpl'},
+                {field: 'update_at', title: '更新时间', minWidth: 160, align: 'center', sort: true},
+                {toolbar: '#toolbar', align: 'center', minWidth: 200, title: '操作', fixed: 'right'},
+            ]]
+        });
+    });
+</script>
+
+<script type="text/html" id="StockTpl">
+    {{- d.stock === 0 ? '<b class="color-red">0</b>' : '<b class="color-green">' + d.stock + '</b>'}}
+</script>
+
+<script type="text/html" id="PriceTpl">
+    {{- d.value ? '¥' + parseFloat(d.value).toFixed(2) : ''}}
+</script>
+
+<script type="text/html" id="toolbar">
+    <!--{if auth('inbound')}-->
+    <a class="layui-btn layui-btn-xs layui-btn-normal" data-modal='{:url("inbound")}?product_id={{d.product_id}}'>入库</a>
+    <!--{/if}-->
+    <!--{if auth('outbound')}-->
+    <a class="layui-btn layui-btn-xs" data-modal='{:url("outbound")}?product_id={{d.product_id}}'>出库</a>
+    <!--{/if}-->
+    <!--{if auth('sold')}-->
+    <a class="layui-btn layui-btn-xs layui-btn-warm" data-modal='{:url("sold")}?product_id={{d.product_id}}'>售出</a>
+    <!--{/if}-->
+    <!--{if auth('adjust')}-->
+    <a class="layui-btn layui-btn-xs layui-btn-primary" data-modal='{:url("adjust")}?product_id={{d.product_id}}'>盘点</a>
+    <!--{/if}-->
+</script>
+{/block}

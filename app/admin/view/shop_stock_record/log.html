@@ -1,0 +1,56 @@
+{extend name='table'}
+
+{block name="content"}
+<div class="layui-tab layui-tab-card">
+    <div class="layui-tab-content">
+        <form class="layui-form layui-form-pane form-search" action="{:sysuri()}" onsubmit="return false" method="get" autocomplete="off">
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">货号(条码)</label>
+                <div class="layui-input-inline"><input name="barcode" value="{$get.barcode|default=''}" placeholder="请输入条码" class="layui-input"></div>
+            </div>
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">商品名称</label>
+                <div class="layui-input-inline"><input name="name" value="{$get.name|default=''}" placeholder="请输入商品名称" class="layui-input"></div>
+            </div>
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label">增减类型</label>
+                <div class="layui-input-inline">
+                    <select class="layui-select" name="type">
+                        <option value="">-- 全部 --</option>
+                        <option value="1"{if isset($get.type) and $get.type eq '1'} selected{/if}>入库</option>
+                        <option value="2"{if isset($get.type) and $get.type eq '2'} selected{/if}>出库</option>
+                        <option value="3"{if isset($get.type) and $get.type eq '3'} selected{/if}>售出</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-inline">
+                <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+            </div>
+        </form>
+        <table id="ShopStockLogTable" data-url="{:request()->url()}" data-target-search="form.form-search"></table>
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        $('#ShopStockLogTable').layTable({
+            even: true, height: 'full',
+            sort: {field: 'id', type: 'desc'},
+            cols: [[
+                {checkbox: true, fixed: true},
+                {field: 'barcode', title: '货号(条码)', width: 150, align: 'center'},
+                {field: 'name', title: '商品名称', width: 200, align: 'left'},
+                {field: 'type', title: '增减类型', width: 100, align: 'center', templet: '#TypeTpl'},
+                {field: 'quantity', title: '数量', width: 100, align: 'center'},
+                {field: 'create_at', title: '时间', minWidth: 170, align: 'center', sort: true},
+            ]]
+        });
+    });
+</script>
+
+<script type="text/html" id="TypeTpl">
+    {{- d.type === 1 ? '<b class="color-green">入库</b>' : (d.type === 3 ? '<b class="color-red">售出</b>' : '<b class="color-blue">出库</b>')}}
+</script>
+{/block}

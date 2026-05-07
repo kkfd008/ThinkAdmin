@@ -1,0 +1,47 @@
+{extend name='table'}
+
+{block name="button"}
+<!--{if auth("add")}-->
+<button data-table-id="ShopSupplierTable" data-modal='{:url("add")}' class='layui-btn layui-btn-sm layui-btn-primary'>添加供应商</button>
+<!--{/if}-->
+<!--{if auth("remove")}-->
+<button data-table-id="ShopSupplierTable" data-action='{:url("remove")}' data-rule="id#{id}" data-confirm="确定要批量删除吗？" class='layui-btn layui-btn-sm layui-btn-primary'>批量删除</button>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<div class="layui-tab layui-tab-card">
+    <div class="layui-tab-content">
+        {include file='shop_supplier/index_search'}
+        <table id="ShopSupplierTable" data-url="{:request()->url()}" data-target-search="form.form-search"></table>
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        $('#ShopSupplierTable').layTable({
+            even: true, height: 'full',
+            sort: {field: 'id', type: 'desc'},
+            cols: [[
+                {checkbox: true, fixed: true},
+                {field: 'code', title: '供应商ID', width: 130, align: 'center'},
+                {field: 'name', title: '供应商名称', width: 200, align: 'left'},
+                {field: 'phone', title: '供应商电话', width: 150, align: 'center'},
+                {field: 'create_at', title: '创建时间', minWidth: 170, align: 'center', sort: true},
+                {toolbar: '#toolbar', align: 'center', minWidth: 150, title: '操作', fixed: 'right'},
+            ]]
+        });
+    });
+</script>
+
+<script type="text/html" id="toolbar">
+    <!--{if auth('edit')}-->
+    <a class="layui-btn layui-btn-primary layui-btn-sm" data-event-dbclick data-title="编辑供应商" data-modal='{:url("edit")}?id={{d.id}}'>编 辑</a>
+    <!--{/if}-->
+    <!--{if auth('remove')}-->
+    <a class="layui-btn layui-btn-danger layui-btn-sm" data-confirm="确定要删除吗?" data-action="{:url('remove')}" data-value="id#{{d.id}}">删 除</a>
+    <!--{/if}-->
+</script>
+{/block}

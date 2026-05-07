@@ -1,0 +1,105 @@
+{extend name='main'}
+
+{block name="content"}
+<div class="layui-card">
+    <div class="layui-card-header">{:lang('导入预览')}</div>
+    <div class="layui-card-body">
+        
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('待导入数据')}</label>
+            <div class="layui-input-block">
+                <table class="layui-table" id="previewTable">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" lay-filter="allChoose" lay-skin="primary"></th>
+                            <th>{:lang('行号')}</th>
+                            <th>{:lang('商品编码')}</th>
+                            <th>{:lang('商品条码')}</th>
+                            <th>{:lang('商品名称')}</th>
+                            <th>{:lang('商品分类')}</th>
+                            <th>{:lang('计量单位')}</th>
+                            <th>{:lang('库存数量')}</th>
+                            <th>{:lang('预警数量')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach $data as $row}
+                        <tr>
+                            <td><input type="checkbox" name="row" lay-filter="choose" value='{:json_encode($row)}' checked></td>
+                            <td>{$row.row}</td>
+                            <td>{$row.code}</td>
+                            <td>{$row.barcode}</td>
+                            <td>{$row.name}</td>
+                            <td>{$row.category}</td>
+                            <td>{$row.unit}</td>
+                            <td>{$row.stock}</td>
+                            <td>{$row.min_stock}</td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="layui-form-item text-center">
+            <button class="layui-btn" id="importBtn">{:lang('确认导入')}</button>
+            <button class="layui-btn layui-btn-danger" data-close>{:lang('取消')}</button>
+        </div>
+
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        layui.form.on('checkbox(allChoose)', function (data) {
+            var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+            child.each(function (index, item) {
+                item.checked = data.elem.checked;
+            });
+            layui.form.render('checkbox');
+        });
+
+        layui.form.on('checkbox(choose)', function (data) {
+            var checkAll = $(data.elem).parents('table').find('thead input[type="checkbox"]')[0];
+            var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+            var allChecked = true;
+            child.each(function (index, item) {
+                if (!item.checked) {
+                    allChecked = false;
+                    return false;
+                }
+            });
+            checkAll.checked = allChecked;
+            layui.form.render('checkbox');
+        });
+
+        $('#importBtn').click(function () {
+            var selected = [];
+            $('input[name="row"]:checked').each(function () {
+                selected.push(JSON.parse($(this).val()));
+            });
+
+            if (selected.length === 0) {
+                $.msg.error('{:lang("请选择要导入的数据")}');
+                return;
+            }
+
+            $.msg.confirm('{:lang("确定要导入选中的数据吗？")}', function () {
+                $.form.load('{:url("import")}', {data: JSON.stringify(selected)}, 'post', function (ret) {
+                    if (ret.code === 1) {
+                        $.msg.success(ret.info, 3, function () {
+                            layer.closeAll();
+                            parent.$('#ShopStockRecordTable').trigger('reload');
+                        });
+                    } else {
+                        $.msg.error(ret.info);
+                    }
+                    return false;
+                });
+            });
+        });
+    });
+</script>
+{/block}

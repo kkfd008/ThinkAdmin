@@ -1,0 +1,64 @@
+{extend name='main'}
+
+{block name="content"}
+<div class="layui-card">
+    <div class="layui-card-header">发货单导入</div>
+    <div class="layui-card-body">
+
+        <form method="post" action="{:url('preview')}" enctype="multipart/form-data" class="layui-form">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">选择文件</label>
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn layui-btn-normal" id="selectFileBtn">
+                        <i class="layui-icon">&#xe67c;</i> 选择发货单Excel文件
+                    </button>
+                    <input type="file" name="file" accept=".xlsx,.xls" style="display:none;" id="fileInput">
+                    <div class="layui-inline layui-word-aux" id="fileName"></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="display:none;" id="submitRow">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" id="submitBtn">
+                        <i class="layui-icon">&#xe67c;</i> 上传并预览数据
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">&nbsp;</label>
+            <div class="layui-input-block">
+                <div class="layui-text color-desc">
+                    <p>将自动识别Excel：<br>
+                    Row1 = 发货单名称 · Row2 = 客户 + 日期 · Row3 = 表头 · Row4+ = 商品数据</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        $('#selectFileBtn').click(function () { $('#fileInput').click(); });
+
+        $('#fileInput').change(function () {
+            var file = this.files[0];
+            if (!file) return;
+            var ext = file.name.split('.').pop().toLowerCase();
+            if (ext !== 'xlsx' && ext !== 'xls') {
+                $.msg.error('请选择Excel文件(.xlsx/.xls)');
+                $(this).val('');
+                return;
+            }
+            $('#fileName').text(file.name);
+            $('#submitRow').show();
+        });
+    });
+</script>
+{/block}

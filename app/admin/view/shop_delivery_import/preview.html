@@ -1,0 +1,71 @@
+{extend name='main'}
+
+{block name="content"}
+<div class="layui-card">
+    <div class="layui-card-header">导入预览 <span class="layui-badge">{:count((array)$sheets)} 个入库单</span></div>
+    <div class="layui-card-body">
+
+        <form method="post" action="{:url('import')}" class="layui-form" id="importForm">
+
+{foreach $sheets as $idx=>$sheet}
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top:20px;">
+                <legend>
+                    <input type="checkbox" name="sheet_ids[]" lay-filter="sheetCheck" lay-skin="primary" checked value="{$idx}">
+                    <b>{$sheet.title}</b>
+                    &nbsp;|&nbsp;
+                    供应商: <span class="color-green">{$sheet.customer}</span>
+                    &nbsp;|&nbsp;
+                    日期: <span class="color-blue">{$sheet.delivery_date|default=''}</span>
+                    &nbsp;|&nbsp;
+                    商品: <span class="color-red">{:count($sheet.items)} 种</span>
+                </legend>
+                <div class="layui-field-box">
+                    <table class="layui-table" lay-even lay-size="sm">
+                        <thead><tr>
+                            <th>货号(条码)</th><th>商品名称</th><th>箱规</th><th>箱数</th>
+                            <th>数量</th><th>单位</th><th>供货价</th><th>零售价</th>
+                        </tr></thead>
+                        <tbody>
+{foreach $sheet.items as $item}
+                            <tr>
+                                <td>{$item.barcode}</td><td>{$item.name}</td>
+                                <td>{$item.box_spec}</td><td>{$item.box_count}</td>
+                                <td><b>{$item.quantity}</b></td><td>{$item.unit}</td>
+                                <td>¥{$item.cost_price}</td><td>¥{$item.retail_price}</td>
+                            </tr>
+{/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+{/foreach}
+
+{if empty($sheets)}
+            <div class="think-box-notify" type="error"><b>提示：</b>未能解析到有效数据。</div>
+            <a href="{:url('index')}" class="layui-btn">返回重新上传</a>
+{/if}
+
+{if !empty($sheets)}
+            <div class="hr-line-dashed"></div>
+            <div class="text-center" style="padding:15px 0 5px 0">
+                <button type="submit" class="layui-btn" id="importBtn">确认导入选中的入库单</button>
+                <a href="{:url('index')}" class="layui-btn layui-btn-danger">取消</a>
+            </div>
+{/if}
+
+        </form>
+
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        layui.form.on('checkbox(sheetCheck)', function () {
+            var n = $('input[name="sheet_ids[]"]:checked').length;
+            $('#importBtn').text('确认导入选中的入库单 (' + n + ')');
+        });
+    });
+</script>
+{/block}

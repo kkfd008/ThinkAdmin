@@ -1,0 +1,50 @@
+{extend name='table'}
+
+{block name="button"}
+<!--{if auth("remove")}-->
+<button data-table-id="ShopDeliveryTable" data-action='{:url("remove")}' data-rule="id#{id}" data-confirm="确定要批量删除吗？" class='layui-btn layui-btn-sm layui-btn-primary'>批量删除</button>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<div class="layui-tab layui-tab-card">
+    <div class="layui-tab-content">
+        {include file='shop_delivery/index_search'}
+        <table id="ShopDeliveryTable" data-url="{:request()->url()}" data-target-search="form.form-search"></table>
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        $('#ShopDeliveryTable').layTable({
+            even: true, height: 'full',
+            sort: {field: 'id', type: 'desc'},
+            cols: [[
+                {checkbox: true, fixed: true},
+                {field: 'supplier_name', title: '供应商名称', width: 150, align: 'left'},
+                {field: 'delivery_date', title: '库单时间', width: 120, align: 'center', sort: true},
+                {field: 'order_type', title: '库单类型', width: 100, align: 'center'},
+                {field: 'item_count', title: '商品数', width: 80, align: 'center'},
+                {field: 'total_quantity', title: '总数量', width: 90, align: 'center'},
+                {field: 'total_amount', title: '总金额', width: 110, align: 'center', templet: '#AmountTpl'},
+                {field: 'remark', title: '备注', width: 200, align: 'left'},
+                {field: 'create_at', title: '导入时间', minWidth: 160, align: 'center', sort: true},
+                {toolbar: '#toolbar', align: 'center', minWidth: 120, title: '操作', fixed: 'right'},
+            ]]
+        });
+    });
+</script>
+
+<script type="text/html" id="AmountTpl">
+    <b class="color-green">¥{{parseFloat(d.total_amount).toFixed(2)}}</b>
+</script>
+
+<script type="text/html" id="toolbar">
+    <a class="layui-btn layui-btn-xs layui-btn-normal" data-open='{:url("detail")}?id={{d.id}}'>查看</a>
+    <!--{if auth('remove')}-->
+    <a class="layui-btn layui-btn-danger layui-btn-sm" data-confirm="确定要删除吗?" data-action="{:url('remove')}" data-value="id#{{d.id}}">删 除</a>
+    <!--{/if}-->
+</script>
+{/block}

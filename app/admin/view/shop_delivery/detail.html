@@ -1,0 +1,48 @@
+{extend name='main'}
+
+{block name="content"}
+<div class="layui-card">
+    <div class="layui-card-header">
+        入库单明细
+        <div class="pull-right"><a href="javascript:history.back()" class="layui-btn layui-btn-sm layui-btn-primary">返回列表</a></div>
+    </div>
+    <div class="layui-card-body">
+        <table class="layui-table" lay-even>
+            <tr><td width="100">供应商名称</td><td><b>{$delivery.supplier_name}</b></td></tr>
+            <tr><td>库单时间</td><td>{$delivery.delivery_date}</td></tr>
+            <tr><td>库单类型</td><td><b class="color-green">{$delivery.order_type}</b></td></tr>
+            <tr><td>备注</td><td>{$delivery.remark}</td></tr>
+            <tr><td>导入时间</td><td>{$delivery.create_at}</td></tr>
+        </table>
+
+        <fieldset class="layui-elem-field" style="margin-top:20px;">
+            <legend>
+                商品明细
+                <span class="color-red">{$delivery.item_count} 种</span>
+                &nbsp;|&nbsp;
+                总数量: <b>{$delivery.total_quantity}</b>
+                &nbsp;|&nbsp;
+                总金额: <b class="color-red">¥{$delivery.total_amount}</b>
+            </legend>
+            <div class="layui-field-box">
+                <table class="layui-table" lay-even lay-size="sm">
+                    <thead><tr>
+                        <th>货号(条码)</th><th>商品名称</th><th>箱规</th><th>箱数</th>
+                        <th>数量</th><th>单位</th><th>供货价</th><th>零售价</th>
+                    </tr></thead>
+                    <tbody>
+{foreach $items as $item}
+                        <tr>
+                            <td>{$item.barcode}</td><td>{$item.name}</td>
+                            <td>{$item.box_spec}</td><td>{$item.box_count}</td>
+                            <td><b>{$item.quantity}</b></td><td>{$item.unit}</td>
+                            <td>¥{$item.cost_price}</td><td>¥{$item.price}</td>
+                        </tr>
+{/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+</div>
+{/block}

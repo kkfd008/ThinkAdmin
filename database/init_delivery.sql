@@ -1,0 +1,41 @@
+CREATE TABLE IF NOT EXISTS `shop_delivery` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `title` varchar(200) COMMENT '发货单名称(Sheet名称)',
+  `customer` varchar(200) COMMENT '客户名称',
+  `delivery_date` date COMMENT '发货日期',
+  `sheet_name` varchar(100) COMMENT '原始Sheet名',
+  `total_amount` decimal(12,2) DEFAULT 0 COMMENT '总金额',
+  `item_count` int(11) DEFAULT 0 COMMENT '商品种类数',
+  `total_quantity` int(11) DEFAULT 0 COMMENT '总数量',
+  `operator` varchar(50) COMMENT '核准人',
+  `operator_name` varchar(50) COMMENT '核准人姓名',
+  `remark` varchar(500) COMMENT '备注',
+  `is_deleted` tinyint(1) DEFAULT 0 COMMENT '删除标记',
+  `create_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `delivery_date` (`delivery_date`),
+  KEY `customer` (`customer`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='发货单表';
+
+CREATE TABLE IF NOT EXISTS `shop_delivery_item` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `delivery_id` int(11) NOT NULL COMMENT '发货单ID',
+  `row_no` int(11) COMMENT '行号',
+  `barcode` varchar(100) COMMENT '商品条码(货号)',
+  `name` varchar(200) NOT NULL COMMENT '商品名称',
+  `box_spec` decimal(10,2) COMMENT '箱规(每箱包装数)',
+  `box_count` decimal(10,4) COMMENT '箱数',
+  `quantity` int(11) NOT NULL COMMENT '数量',
+  `unit` varchar(20) COMMENT '计量单位',
+  `cost_price` decimal(10,2) COMMENT '供货价',
+  `total_amount` decimal(10,2) COMMENT '金额汇总',
+  `retail_price` decimal(10,2) COMMENT '建议售价',
+  `product_id` int(11) COMMENT '关联商品ID',
+  `is_deleted` tinyint(1) DEFAULT 0 COMMENT '删除标记',
+  `create_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `delivery_id` (`delivery_id`),
+  KEY `barcode` (`barcode`),
+  KEY `product_id` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='发货单明细表';

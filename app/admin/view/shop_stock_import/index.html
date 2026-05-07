@@ -1,0 +1,117 @@
+{extend name='main'}
+
+{block name="content"}
+<div class="layui-card">
+    <div class="layui-card-header">{:lang('库存导入')}</div>
+    <div class="layui-card-body">
+        
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('导入说明')}</label>
+            <div class="layui-input-block">
+                <ul class="layui-timeline">
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis"></i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">{:lang('步骤一')}</h3>
+                            <p>{:lang('下载导入模板，按照模板格式填写数据')}</p>
+                        </div>
+                    </li>
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis"></i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">{:lang('步骤二')}</h3>
+                            <p>{:lang('选择已填写好的Excel文件')}</p>
+                        </div>
+                    </li>
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis"></i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">{:lang('步骤三')}</h3>
+                            <p>{:lang('预览数据并确认导入')}</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('下载模板')}</label>
+            <div class="layui-input-block">
+                <a href="{:url('template')}" class="layui-btn layui-btn-primary">
+                    <i class="layui-icon">&#xe601;</i> {:lang('下载导入模板')}
+                </a>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('选择文件')}</label>
+            <div class="layui-input-block">
+                <form action="{:url('preview')}" method="post" enctype="multipart/form-data" id="importForm">
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn layui-btn-normal" id="uploadBtn">
+                            <i class="layui-icon">&#xe67c;</i> {:lang('选择Excel文件')}
+                        </button>
+                        <input type="file" name="file" accept=".xlsx,.xls" style="display:none;">
+                        <div class="layui-upload-list" id="uploadList"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('模板格式')}</label>
+            <div class="layui-input-block">
+                <table class="layui-table">
+                    <thead>
+                        <tr>
+                            <th>{:lang('商品编码')}</th>
+                            <th>{:lang('商品条码')}</th>
+                            <th>{:lang('商品名称')}</th>
+                            <th>{:lang('商品分类')}</th>
+                            <th>{:lang('计量单位')}</th>
+                            <th>{:lang('库存数量')}</th>
+                            <th>{:lang('预警数量')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>P001</td>
+                            <td>6901234567890</td>
+                            <td>商品示例1</td>
+                            <td>食品</td>
+                            <td>件</td>
+                            <td>100</td>
+                            <td>10</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    $(function () {
+        $('#uploadBtn').click(function () {
+            $(this).next('input[type="file"]').click();
+        });
+
+        $('input[type="file"]').change(function () {
+            var file = this.files[0];
+            if (file) {
+                var ext = file.name.split('.').pop().toLowerCase();
+                if (ext !== 'xlsx' && ext !== 'xls') {
+                    $.msg.error('{:lang("请选择Excel文件")}');
+                    $(this).val('');
+                    return;
+                }
+                $('#uploadList').html('<p class="layui-upload-drag">'+file.name+'</p>');
+                $('#importForm').submit();
+            }
+        });
+    });
+</script>
+{/block}

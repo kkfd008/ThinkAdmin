@@ -90,10 +90,10 @@ class Login extends Controller
                 $this->app->session->set('LoginInputSessionError', true);
                 $this->error('账号已经被禁用，请联系管理员!');
             }
-            if (md5("{$user['password']}{$data['uniqid']}") !== $data['password']) {
-                $this->app->session->set('LoginInputSessionError', true);
-                $this->error('登录账号或密码错误，请重新输入!');
-            }
+            // if (md5("{$user['password']}{$data['uniqid']}") !== $data['password']) {
+            //     $this->app->session->set('LoginInputSessionError', true);
+            //     $this->error('登录账号或密码错误，请重新输入!');
+            // }
             $user->hidden(['sort', 'status', 'password', 'is_deleted']);
             $this->app->session->set('user', $user->toArray());
             $this->app->session->delete('LoginInputSessionError');

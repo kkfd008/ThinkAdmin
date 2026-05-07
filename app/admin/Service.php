@@ -64,6 +64,15 @@ class Service extends Plugin
                     ['name' => '系统用户管理', 'icon' => 'layui-icon layui-icon-username', 'node' => 'admin/user/index'],
                 ],
             ],
+            [
+                'name' => '超市管理',
+                'subs' => [
+                    ['name' => '供应商管理', 'icon' => 'layui-icon layui-icon-group', 'node' => 'admin/shop_supplier/index'],
+                    ['name' => '库存记录管理', 'icon' => 'layui-icon layui-icon-chart-screen', 'node' => 'admin/shop_stock_record/index'],
+                    ['name' => '库单管理', 'icon' => 'layui-icon layui-icon-list', 'node' => 'admin/shop_delivery/index'],
+                    ['name' => '入库单导入', 'icon' => 'layui-icon layui-icon-upload-circle', 'node' => 'admin/shop_delivery_import/index'],
+                ],
+            ],
         ];
     }
 }

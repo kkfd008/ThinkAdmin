@@ -1,0 +1,23 @@
+<form action="{:sysuri()}" method="post" data-auto="true" class="layui-form layui-card" data-table-id="ShopSupplierTable">
+    <div class="layui-card-body padding-left-40">
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>供应商ID</b>Supplier ID</span>
+            <input maxlength="12" minlength="4" class="layui-input" name="code" value='{$vo.code|default=""}' required vali-name="供应商ID" placeholder="4-12位英文字母，不可重复">
+            <span class="help-block">4-12位大写英文字母，作为唯一标识</span>
+        </label>
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>供应商名称</b>Name</span>
+            <input maxlength="100" class="layui-input" name="name" value='{$vo.name|default=""}' required vali-name="供应商名称" placeholder="请输入供应商名称">
+        </label>
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>供应商电话</b>Phone</span>
+            <input maxlength="20" class="layui-input" name="phone" value='{$vo.phone|default=""}' placeholder="请输入供应商电话">
+        </label>
+    </div>
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保 存</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消吗？" data-close>取 消</button>
+    </div>
+</form>

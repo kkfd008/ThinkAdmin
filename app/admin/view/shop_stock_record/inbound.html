@@ -1,0 +1,27 @@
+{if $opType ?? 0 > 0}
+<form action="{:sysuri()}" method="post" data-auto="true" class="layui-form layui-card" data-table-id="ShopStockRecordTable">
+{else}
+<form action="{:url('adjust')}" method="post" data-auto="true" class="layui-form layui-card" data-table-id="ShopStockRecordTable">
+{/if}
+    <div class="layui-card-body padding-left-40">
+        <input type="hidden" name="op_type" value="{$opType ?? 0}">
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>选择商品</b></span>
+            <select class="layui-select" name="product_id" required vali-name="商品">
+                <option value="">请选择商品</option>
+                {foreach $products as $p}
+                <option value="{$p.id}"{if input('product_id') eq $p.id} selected{/if}>{$p.barcode} - {$p.name}</option>
+                {/foreach}
+            </select>
+        </label>
+        <label class="layui-form-item relative block">
+            <span class="help-label"><b>{$opTitle ?? '数量'}</b></span>
+            <input type="number" min="{if $opType===3 or $opType===2}1{else}0{/if}" class="layui-input" name="quantity" value="" required vali-name="数量" placeholder="请输入数量">
+        </label>
+    </div>
+    <div class="hr-line-dashed"></div>
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>确认{$opTitle ?? '提交'}</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消吗？" data-close>取 消</button>
+    </div>
+</form>
